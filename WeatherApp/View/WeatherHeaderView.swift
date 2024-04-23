@@ -20,7 +20,7 @@ class WeatherHeaderView : UIView {
    // MARK: - Lifecycle
     
     override init(frame: CGRect) {
-        super.init(frame: .zero)
+        super.init(frame: frame)
         
         backgroundColor = .red
         addSubview(mySearchBar)

@@ -7,15 +7,18 @@
 
 import UIKit
 
+
 struct WeatherViewModel {
     
     private let weatherModel : WeatherModel
+  
+    
+    var value : String?
+    
     
     init(weatherModel : WeatherModel) {
         self.weatherModel = weatherModel
-        
-        
-        
+       
     }
     
     
