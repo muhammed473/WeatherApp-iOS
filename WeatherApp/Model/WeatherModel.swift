@@ -9,6 +9,7 @@ import Foundation
 
 
 public struct WeatherModel : Codable {
+    
     struct Daily : Codable{
         let dt : Date
         let humidity :  Int
@@ -23,15 +24,16 @@ public struct WeatherModel : Codable {
         struct Weather : Codable {
             let id : Int
             let main : String
-            let icon : String
+         /*   let icon : String
             var weatherIconURL : URL {
                 let urlString = "http://openweather.org/img/wn/\(icon)@2x.png"
                 return URL(string:urlString)!
-            }
+            }*/
         }
         let weather : [Weather]
     }
-    let daily  : [Daily]
+    var daily  : [Daily]
+    
 }
 
 

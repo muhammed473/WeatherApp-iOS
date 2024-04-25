@@ -26,8 +26,18 @@ class WeatherCellView : UITableViewCell {
         label.text = "20/04/2024"
         return label
     }()
-    let minTemp = UILabel()
-    let maxTemp = UILabel()
+   //  let minTemp = UILabel()
+   // let maxTemp = UILabel()
+    let minTemp : UILabel = {
+        let label = UILabel()
+        label.text = "2"
+        return label
+    }()
+    let maxTemp : UILabel = {
+        let label = UILabel()
+        label.text = "12"
+        return label
+    }()
     var tempStack = UIStackView()
     let humidity : UILabel = {
         let label = UILabel()
@@ -39,7 +49,8 @@ class WeatherCellView : UITableViewCell {
         label.text = "Rüzgar hızı : 6.33"
         return label
     }()
-    var weatherViewModel : WeatherViewModel! {
+   
+    var weatherViewModel : WeatherViewModel? {
         didSet{configure()}
     }
     
@@ -48,43 +59,38 @@ class WeatherCellView : UITableViewCell {
      override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        addSubview(weatherImage)
-        weatherImage.anchor(top:topAnchor,left: leftAnchor,bottom: bottomAnchor,paddingTop: 7,paddingLeft: 2,paddingBottom: 7)
-        addSubview(mainlabel)
-        mainlabel.anchor(top: topAnchor,left: weatherImage.rightAnchor,paddingTop: 1,paddingLeft: 2)
-        addSubview(dateLabel)
-        dateLabel.anchor(top:topAnchor,left:mainlabel.rightAnchor,paddingTop: 1,paddingLeft: 3 )
-        
-        minTemp.text = "Minimum 10"
-        maxTemp.text = "20"
-        tempStack = UIStackView(arrangedSubviews: [minTemp,maxTemp])
-        tempStack.axis = .vertical
-        tempStack.spacing = 5
-        addSubview(tempStack)
-        tempStack.anchor(top:mainlabel.bottomAnchor,left:weatherImage.rightAnchor,paddingTop: 5,paddingLeft: 2)
-        
-        addSubview(humidity)
-        humidity.anchor(top:dateLabel.bottomAnchor,left: minTemp.rightAnchor,paddingTop: 5,paddingLeft: 2)
-        
-        addSubview(wind_speed)
-        wind_speed.anchor(top:humidity.bottomAnchor,left:maxTemp.rightAnchor,paddingTop: 5,paddingLeft: 2)
-               
+         addSubview(weatherImage)
+         weatherImage.anchor(top:topAnchor,left: leftAnchor,bottom: bottomAnchor,paddingTop: 7,paddingLeft: 2,paddingBottom: 7)
+         addSubview(mainlabel)
+         mainlabel.anchor(top: topAnchor,left: weatherImage.rightAnchor,paddingTop: 1,paddingLeft: 2)
+         addSubview(dateLabel)
+         dateLabel.anchor(top:topAnchor,left:mainlabel.rightAnchor,paddingTop: 1,paddingLeft: 3 )
+         
+        // minTemp.text = "Minimum 10"
+        // maxTemp.text = "20"
+         tempStack = UIStackView(arrangedSubviews: [minTemp,maxTemp])
+         tempStack.axis = .vertical
+         tempStack.spacing = 5
+         addSubview(tempStack)
+         tempStack.anchor(top:mainlabel.bottomAnchor,left:weatherImage.rightAnchor,paddingTop: 5,paddingLeft: 2)
+         
+         addSubview(humidity)
+         humidity.anchor(top:dateLabel.bottomAnchor,left: minTemp.rightAnchor,paddingTop: 5,paddingLeft: 2)
+         
+         addSubview(wind_speed)
+         wind_speed.anchor(top:humidity.bottomAnchor,left:maxTemp.rightAnchor,paddingTop: 5,paddingLeft: 2)
+       
     }
     
     required init?(coder: NSCoder){
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(){
-        weatherImage.image = UIImage(named: "bulut")
-        mainlabel.text = weatherViewModel.value
-        dateLabel.text = weatherViewModel.value
-        minTemp.text = weatherViewModel.value
-        maxTemp.text = weatherViewModel.value
-        humidity.text = weatherViewModel.value
-        wind_speed.text = weatherViewModel.value
+    func configure() {
+        mainlabel.text = weatherViewModel?.main
+        wind_speed.text = weatherViewModel?.wind_speed
+        dateLabel.text = weatherViewModel?.day
+        humidity.text = weatherViewModel?.humidity
     }
-    
-   
     
 }
