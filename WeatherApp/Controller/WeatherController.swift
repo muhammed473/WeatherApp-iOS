@@ -7,6 +7,7 @@
 
 import UIKit
 import CoreLocation
+import JGProgressHUD
 
 class WeatherController: UITableViewController {
     
@@ -51,18 +52,23 @@ class WeatherController: UITableViewController {
             }
             if let lat = placeMarks?.first?.location?.coordinate.latitude,
                let lon = placeMarks?.first?.location?.coordinate.longitude{
+                let hud = JGProgressHUD(style: .dark)
+                hud.textLabel.text = "Loading weather information.."
+                hud.show(in: self.view)
                 serviceApi.getJSON(urlString:  "https://api.openweathermap.org/data/3.0/onecall?lat=\(lat)&lon=\(lon)&exclude=current,minutely,hourly,alerts&appid=5f5e2e25a9e872e3b2bfe5dbcda29d13",dateDecodingStrategy: .secondsSince1970) { (result: Result<WeatherModel,ServiceApi.APIError>) in
                     switch result {
                     case .success(let weatherModel):
                         DispatchQueue.main.async { [weak self] in
                             self?.weatherViewModels = weatherModel.daily.map { WeatherViewModel(daily: $0)}
                             self?.tableView.reloadData()
+                            hud.dismiss()
                         }
                         completion()
                     case .failure(let apiError):
                         switch apiError {
                         case .error(let errorString):
                             print(errorString)
+                            hud.dismiss()
                         }
                         self.tableView.reloadData()
                     }

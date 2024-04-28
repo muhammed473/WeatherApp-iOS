@@ -27,7 +27,7 @@ class WeatherHeaderView : UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        backgroundColor = .red
+        backgroundColor = .white
         addSubview(mySearchBar)
         mySearchBar.anchor(top:topAnchor,left: leftAnchor,right: rightAnchor,paddingTop: 50,paddingLeft: 15,paddingRight: 15)
         mySearchBar.delegate = self
