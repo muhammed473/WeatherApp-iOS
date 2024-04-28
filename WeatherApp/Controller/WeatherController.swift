@@ -6,32 +6,27 @@
 //
 
 import UIKit
-import SDWebImage
 import CoreLocation
 
-let cellIdentifier = "cell"
 class WeatherController: UITableViewController {
-    
     
     
     // MARK: - Properties
     
     private let weatherHeaderView = WeatherHeaderView()
     private var weatherViewModels : [WeatherViewModel] = []
+    private var cityText : String?
+    let cellIdentifier = "cell"
     
     
     // MARK: - Lifecycle
-    
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         configureUI()
         getService{print("ViewModel sayısı : \(self.weatherViewModels.count)")}
-        
-        
-        
+        weatherHeaderView.delegate = self
     }
     
     // MARK: - Assistants
@@ -40,20 +35,17 @@ class WeatherController: UITableViewController {
         
         tableView.tableHeaderView = weatherHeaderView
         tableView.register(WeatherCellView.self, forCellReuseIdentifier: cellIdentifier)
-        weatherHeaderView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 150)
-        /* view.addSubview(humidity)
-         humidity.centerX(inView: view)
-         humidity.centerY(inView: view) */
-        
+        weatherHeaderView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 120)
         tableView.reloadData()
-        
     }
     
     func getService(completion:@escaping() ->Void) {
         let serviceApi = ServiceApi.shared
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "E, MMM, d"
-        CLGeocoder().geocodeAddressString("Sivas"){ (placeMarks,error) in
+        //CLGeocoder().geocodeAddressString("Sivas"){ (placeMarks,error) in
+        guard let cityText = cityText else {return}
+        CLGeocoder().geocodeAddressString(cityText){ (placeMarks,error) in
             if let error = error {
                 print(error.localizedDescription)
             }
@@ -62,11 +54,9 @@ class WeatherController: UITableViewController {
                 serviceApi.getJSON(urlString:  "https://api.openweathermap.org/data/3.0/onecall?lat=\(lat)&lon=\(lon)&exclude=current,minutely,hourly,alerts&appid=5f5e2e25a9e872e3b2bfe5dbcda29d13",dateDecodingStrategy: .secondsSince1970) { (result: Result<WeatherModel,ServiceApi.APIError>) in
                     switch result {
                     case .success(let weatherModel):
-                        DispatchQueue.main.async {
-                            self.weatherViewModels = weatherModel.daily.map { WeatherViewModel(daily: $0)}
-                          //  self.tableView.reloadData()
-                           // completion()
-                            self.tableView.reloadData()
+                        DispatchQueue.main.async { [weak self] in
+                            self?.weatherViewModels = weatherModel.daily.map { WeatherViewModel(daily: $0)}
+                            self?.tableView.reloadData()
                         }
                         completion()
                     case .failure(let apiError):
@@ -74,11 +64,12 @@ class WeatherController: UITableViewController {
                         case .error(let errorString):
                             print(errorString)
                         }
-                       // self.tableView.reloadData()
+                        self.tableView.reloadData()
                     }
                 }
             }
         }
+        self.tableView.reloadData()
     }
     
 }
@@ -93,25 +84,9 @@ extension WeatherController {
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return weatherViewModels.count
-        print(weatherViewModels.count)
-        
-   
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-         /* let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! WeatherCellView
-          self.weatherViewModels.forEach { weatherViewModel in
-          cell.weatherViewModel = weatherViewModel
-          }
-          return cell */
-        
-     
-        /* let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! WeatherCellView
-         let weatherViewModel = weatherViewModels[indexPath.row]
-         cell.weatherViewModel = weatherViewModel
-         return cell */
-        
         
         let  everyDayCellWeatherViewModel = weatherViewModels[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! WeatherCellView
@@ -129,11 +104,26 @@ extension WeatherController {
 extension WeatherController {
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 150
+        return 140
     }
     
 }
 
+// MARK: - SearchBarDelegate
+
+extension WeatherController : SearchBarDelegate{
+    
+    func searchBarText(searchBar: UISearchBar) {
+        print("Tıkladım")
+        guard let text = searchBar.text,!text.replacingOccurrences(of: " ", with: "").isEmpty else{return}
+        searchBar.resignFirstResponder()
+        self.cityText = text
+        getService {  
+            print("city : \(self.cityText!)")
+        }
+    }
+    
+}
 
 
 

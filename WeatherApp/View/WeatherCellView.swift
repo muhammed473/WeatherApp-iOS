@@ -5,20 +5,22 @@
 //  Created by muhammed dursun on 20.04.2024.
 //
 
-import UIKit
+import SDWebImage
 
 class WeatherCellView : UITableViewCell {
     
     // MARK: - Properties
     
-    let weatherImage : UIImageView = {
-       let icon = UIImageView()
+    var weatherImage : UIImageView = {
+       var icon = UIImageView()
         icon.contentMode = .scaleAspectFill
+        icon.setDimensions(height: 85, width: 60)
+        icon.translatesAutoresizingMaskIntoConstraints = false
+       // icon.image = UIImage(named: "pngbulut")
         return icon
     }()
     let mainlabel : UILabel =  {
         let label = UILabel()
-        label.text = "Rainy"
         return label
     }()
     let dateLabel : UILabel = {
@@ -60,14 +62,13 @@ class WeatherCellView : UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
          addSubview(weatherImage)
-         weatherImage.anchor(top:topAnchor,left: leftAnchor,bottom: bottomAnchor,paddingTop: 7,paddingLeft: 2,paddingBottom: 7)
+        weatherImage.anchor(top:topAnchor,left: leftAnchor,paddingTop: 6,paddingLeft: 5)
+         weatherImage.heightAnchor.constraint(equalToConstant: 85).isActive = true
          addSubview(mainlabel)
          mainlabel.anchor(top: topAnchor,left: weatherImage.rightAnchor,paddingTop: 1,paddingLeft: 2)
          addSubview(dateLabel)
          dateLabel.anchor(top:topAnchor,left:mainlabel.rightAnchor,paddingTop: 1,paddingLeft: 3 )
          
-        // minTemp.text = "Minimum 10"
-        // maxTemp.text = "20"
          tempStack = UIStackView(arrangedSubviews: [minTemp,maxTemp])
          tempStack.axis = .vertical
          tempStack.spacing = 5
@@ -91,6 +92,10 @@ class WeatherCellView : UITableViewCell {
         wind_speed.text = weatherViewModel?.wind_speed
         dateLabel.text = weatherViewModel?.day
         humidity.text = weatherViewModel?.humidity
+        minTemp.text = weatherViewModel?.min
+        maxTemp.text = weatherViewModel?.max
+        weatherImage.sd_setImage(with: self.weatherViewModel?.weatherIconURL)
+     
     }
     
 }

@@ -49,6 +49,10 @@ struct WeatherViewModel {
     var main : String{
         daily.weather[0].main.capitalized
     }
+    var weatherIconURL : URL {
+        let urlString = "https://openweathermap.org/img/wn/\(daily.weather[0].icon)@2x.png"
+        return URL(string:urlString)!
+    }
    
    
     

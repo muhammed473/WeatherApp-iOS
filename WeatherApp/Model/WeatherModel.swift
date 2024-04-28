@@ -24,14 +24,11 @@ public struct WeatherModel : Codable {
         struct Weather : Codable {
             let id : Int
             let main : String
-         /*   let icon : String
-            var weatherIconURL : URL {
-                let urlString = "http://openweather.org/img/wn/\(icon)@2x.png"
-                return URL(string:urlString)!
-            }*/
+            let icon : String
         }
         let weather : [Weather]
     }
+    
     var daily  : [Daily]
     
 }

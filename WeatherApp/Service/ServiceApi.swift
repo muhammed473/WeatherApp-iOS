@@ -25,7 +25,7 @@ public  class ServiceApi {
             return
         }
         let request = URLRequest(url: url)
-        URLSession.shared.dataTask(with: request) { data, response, error in
+        URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
             if let error = error {
                 completion(.failure(.error("Error: \(error.localizedDescription)")))
                 return
@@ -46,16 +46,9 @@ public  class ServiceApi {
                 completion(.failure(APIError.error("Error: \(decodingError.localizedDescription)")))
                 return
             }
-            
-            
+        
         }.resume()
-                
-                
-                
-                
-                
+                   
     }
-    
-    
     
 }
